@@ -1,0 +1,7 @@
+POST http://localhost:3333/plateau
+content-type: application/json
+
+{
+  "width": 4,
+  "height": 4
+}
