@@ -1,0 +1,25 @@
+### CREATE PLATEAU ( by means of fast testing it goes here )
+# @name createPlateau
+POST http://localhost:3333/plateau
+content-type: application/json
+
+{
+  "width": 4,
+  "height": 6
+}
+
+### CREATE ROVER
+# @name createRover
+POST http://localhost:3333/rover
+content-type: application/json
+
+{
+  "plateauId": "{{ createPlateau.response.body.$.id }}",
+  "landing": {
+    "xAxis": 4,
+    "yAxis": 4,
+    "cardinalPosition": "S"    
+  },
+  "instruction": "LMLMLMLMM"
+}
+

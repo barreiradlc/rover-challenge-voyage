@@ -75,4 +75,53 @@ describe("Create Rover useCase", () => {
       })  
     ).rejects.toBeInstanceOf(Error)        
   })
+
+  it('Should be able to match Documentation values', async () => {    
+    /*
+      ### Example 1
+
+      Landing Position: 1 2 N \
+      Instruction: LMLMLMLMM \
+      Final Position: 1 3 N
+
+      ### Example 2
+      Landing Position: 3 3 E \
+      Instruction: MRRMMRMRRM \
+      Final Position: 2 3 S
+    */
+
+    const { id: plateauId } = await inMemoryPlateauRepository.create(plateauPayload)
+    roverPayload.plateauId = plateauId
+
+    const roverExample1 = await sut.execute({
+      ...roverPayload,
+      landing: {
+        xAxis: 1,
+        yAxis: 2,
+        cardinalPosition: CardinalPoint.N
+      },
+      instruction: "LMLMLMLMM"
+    })
+
+    const roverExample2 = await sut.execute({
+      ...roverPayload,
+      landing: {
+        xAxis: 3,
+        yAxis: 3,
+        cardinalPosition: CardinalPoint.E
+      },
+      instruction: "MRRMMRMRRM"
+    })
+    
+    const roverExample1FinalPosition = roverExample1.finalPosition
+    const roverExample2FinalPosition = roverExample2.finalPosition
+
+    expect(roverExample1FinalPosition.xAxis).toEqual(1)
+    expect(roverExample1FinalPosition.yAxis).toEqual(3)
+    expect(roverExample1FinalPosition.cardinalPosition).toEqual(CardinalPoint.N)
+
+    expect(roverExample2FinalPosition.xAxis).toEqual(2)
+    expect(roverExample2FinalPosition.yAxis).toEqual(3)
+    expect(roverExample2FinalPosition.cardinalPosition).toEqual(CardinalPoint.S)
+  })
 })

@@ -1,20 +1,17 @@
+import { CardinalPoint } from "@prisma/client";
+
 interface Position {
   xAxis: number
   yAxis: number
-  cardinalPosition: CardinalPoint  
-}
-
-enum CardinalPoint {
-  N = 'N',
-  E = 'E',
-  S = 'S',
-  W = 'W',
+  cardinalPosition: CardinalPoint
 }
 
 interface RoverEntity {
   // TODO, input the correct typing
   id: string;  
+  plateauId: string
   initialPosition: Position,
+  finalPosition: Position,
   instruction: string
 }
 

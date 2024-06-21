@@ -19,6 +19,8 @@ model Plateau {
   width   Int
   height  Int
 
+  rovers Rover[]
+
   @@map("plateaus")
 }
 
@@ -38,14 +40,23 @@ model Position {
 
   roversLanding Rover[] @relation("initialPosition")
   roversFinalDestination Rover[] @relation("finalPosition")
+
+  @@map("positions")
 }
 
 model Rover {
   id       String  @id @default(uuid())
+
+  instruction String
 
   initialPosition   Position @relation("initialPosition", fields: [initialPositionId], references: [id])
   initialPositionId String
   
   finalPosition   Position @relation("finalPosition", fields: [finalPositionId], references: [id])
   finalPositionId String
+
+  plateau Plateau @relation(fields: [plateauId], references: [id])
+  plateauId String
+
+  @@map("rovers")
 }
