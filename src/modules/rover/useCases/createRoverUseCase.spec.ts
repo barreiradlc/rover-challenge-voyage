@@ -19,7 +19,7 @@ const roverPayload: CreateRoverDTO = {
   plateauId: "fake-plateau-id",
   landing: {
     xAxis: 4,
-    yAxis: 5,
+    yAxis: 4,
     cardinalPosition: CardinalPoint.S    
   },
   instruction: "LMLMLMLMM"
@@ -45,9 +45,39 @@ describe("Create Rover useCase", () => {
   //   expect(rover.id).toEqual(expect.any(String))
   // })
 
-  it('Should not be able to create Rover without a plateau', async () => {        
+  it('Should not be able to create Rover without a plateau', async () => {
     await expect(async() => 
       sut.execute(roverPayload)  
+    ).rejects.toBeInstanceOf(Error)        
+  })
+
+  it('Should not be able to create Rover without landing inside the plateau x-Axis', async () => {        
+    const { id: plateauId } = await inMemoryPlateauRepository.create(plateauPayload)    
+
+    await expect(async() => 
+      sut.execute({
+        instruction: roverPayload.instruction,
+        plateauId: plateauId,
+        landing: {
+          ...roverPayload.landing,
+          xAxis: 5
+        }
+      })  
+    ).rejects.toBeInstanceOf(Error)        
+  })
+
+  it('Should not be able to create Rover without landing inside the plateau y-Axis', async () => {        
+    const { id: plateauId } = await inMemoryPlateauRepository.create(plateauPayload)    
+
+    await expect(async() => 
+      sut.execute({
+        instruction: roverPayload.instruction,
+        plateauId: plateauId,
+        landing: {
+          ...roverPayload.landing,
+          yAxis: 5
+        }
+      })  
     ).rejects.toBeInstanceOf(Error)        
   })
 })
