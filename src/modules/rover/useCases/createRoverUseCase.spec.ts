@@ -2,9 +2,8 @@ import { InMemoryPlateauRepository } from '@/core/repositories/in-memory/in-memo
 import { InMemoryRoverRepository } from '@/core/repositories/in-memory/in-memory-rover-repository'
 import { CreatePlateauDTO } from '@/modules/plateau/dtos/plateau/create-plateau-dto'
 import { beforeEach, describe, expect, it } from 'vitest'
-import { CreateRoverDTO } from '../dtos/rover/create-rover-dto'
 import { CardinalPoint } from '../entities/rover'
-import { CreateRoverUseCase } from './createRoverUseCase'
+import { CreateRoverUseCase, CreateRoverUseCaseInterface } from './createRoverUseCase'
 
 let inMemoryRoverRepository: InMemoryRoverRepository
 let inMemoryPlateauRepository: InMemoryPlateauRepository
@@ -15,7 +14,7 @@ const plateauPayload: CreatePlateauDTO = {
   height: 4
 }
 
-const roverPayload: CreateRoverDTO = {  
+const roverPayload: CreateRoverUseCaseInterface = {  
   plateauId: "fake-plateau-id",
   landing: {
     xAxis: 4,
@@ -32,18 +31,14 @@ describe("Create Rover useCase", () => {
     sut = new CreateRoverUseCase(inMemoryPlateauRepository,inMemoryRoverRepository)
   })
 
-  // Finish validations first
-  // it('Should be able to create Rover', async () => {
-  //   const { id: plateauId } = await inMemoryPlateauRepository.create(plateauPayload)
-  //   roverPayload.plateauId = plateauId
+  it('Should be able to create Rover', async () => {
+    const { id: plateauId } = await inMemoryPlateauRepository.create(plateauPayload)
+    roverPayload.plateauId = plateauId
 
-  //   const rover = await sut.execute(roverPayload)
+    const rover = await sut.execute(roverPayload)
 
-  //   console.log('rover created')
-  //   console.log(rover)
-
-  //   expect(rover.id).toEqual(expect.any(String))
-  // })
+    expect(rover.id).toEqual(expect.any(String))
+  })
 
   it('Should not be able to create Rover without a plateau', async () => {
     await expect(async() => 
@@ -52,8 +47,8 @@ describe("Create Rover useCase", () => {
   })
 
   it('Should not be able to create Rover without landing inside the plateau x-Axis', async () => {        
-    const { id: plateauId } = await inMemoryPlateauRepository.create(plateauPayload)    
-
+    const { id: plateauId } = await inMemoryPlateauRepository.create(plateauPayload)
+    
     await expect(async() => 
       sut.execute({
         instruction: roverPayload.instruction,

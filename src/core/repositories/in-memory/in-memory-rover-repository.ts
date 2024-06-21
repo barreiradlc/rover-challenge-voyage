@@ -8,10 +8,12 @@ class InMemoryRoverRepository implements RoverRepository {
   public rovers: RoverEntity[] = [];
   
 
-  async create({ landing, instruction }: CreateRoverDTO): Promise<RoverEntity> {
+  async create({ landing, instruction, destination, plateauId }: CreateRoverDTO): Promise<RoverEntity> {
     const rover: RoverEntity = {
       id: randomUUID(),
       initialPosition: landing,
+      finalPosition: destination,
+      plateauId,
       instruction
     }
 

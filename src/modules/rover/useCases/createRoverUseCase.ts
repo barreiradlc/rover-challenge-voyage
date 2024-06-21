@@ -1,8 +1,18 @@
 import { PlateauRepository } from "@/core/repositories/plateau-repository";
 import { RoverRepository } from "@/core/repositories/rover-repository";
-import { CreateRoverDTO } from "../dtos/rover/create-rover-dto";
+import { CardinalPoint } from "../entities/rover";
+import { GetFinalPositionService } from "../services/getFinalPositionService";
 import { validateAxisFit } from "../services/validatePlateauBoundaries";
 
+interface CreateRoverUseCaseInterface{
+  plateauId: string
+  landing: {
+    xAxis: number,
+    yAxis: number,
+    cardinalPosition: CardinalPoint
+  },
+  instruction: string
+}
 
 class CreateRoverUseCase {
   constructor(
@@ -14,7 +24,7 @@ class CreateRoverUseCase {
     landing,
     instruction,
     plateauId
-  }: CreateRoverDTO) {
+  }: CreateRoverUseCaseInterface) {
     const plateau = await this.plateauRepository.find(plateauId)    
 
 
@@ -37,7 +47,13 @@ class CreateRoverUseCase {
       throw new Error("The Rover can't land outside the plateau")
     }
 
-    const rover = await this.roverRepository.create({ landing, instruction, plateauId })
+    const getFinalPositionService = new GetFinalPositionService()
+    const destination = await getFinalPositionService.execute({
+      landing,
+      instruction
+    })
+
+    const rover = await this.roverRepository.create({ landing, instruction, plateauId, destination })
 
     if (!rover) {
       throw new Error("Something went wrong!");      
@@ -47,4 +63,4 @@ class CreateRoverUseCase {
   }
 }
 
-export { CreateRoverUseCase };
+export { CreateRoverUseCase, CreateRoverUseCaseInterface };

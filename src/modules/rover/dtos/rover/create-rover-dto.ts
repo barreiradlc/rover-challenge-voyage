@@ -8,6 +8,11 @@ interface CreateRoverDTO {
     yAxis: number,
     cardinalPosition: CardinalPoint
   },
+  destination: {
+    xAxis: number,
+    yAxis: number,
+    cardinalPosition: CardinalPoint
+  },
   instruction: string
 }
 
