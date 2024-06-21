@@ -5,6 +5,12 @@ import { PlateauRepository } from "../plateau-repository";
 
 class PrismaPlateauRepository implements PlateauRepository {
   public plateaus: PlateauEntity[] = [];
+  
+  async find(id: string): Promise<PlateauEntity | undefined | null> {
+    const plateau = await prisma.plateau.findUnique({ where: { id } })
+
+    return plateau;
+  }
 
   async create({ width, height }: CreatePlateauDTO): Promise<PlateauEntity> {
     const plateau = await prisma.plateau.create({ 

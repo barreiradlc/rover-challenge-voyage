@@ -1,7 +1,15 @@
+### CREATE PLATEAU
+# @name createPlateau
 POST http://localhost:3333/plateau
 content-type: application/json
 
 {
   "width": 4,
-  "height": 4
+  "height": 6
 }
+
+### FIND PLATEAU
+# @name findPlateau
+GET http://localhost:3333/plateau/{{ createPlateau.response.body.$.id }}
+content-type: application/json
+

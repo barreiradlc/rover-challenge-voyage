@@ -2,9 +2,10 @@
 
 ## Setup
 
-### docker setup
+### docker db setup
 
 ```sh
+
 docker run --name voyager_rover_db -e POSTGRESQL_USERNAME=docker -e POSTGRESQL_PASSWORD=docker -e POSTGRESQL_DATABASE=voyager_rover -p 5432:5432 bitnami/postgresql
 
 docker start voyager_rover_db

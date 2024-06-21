@@ -1,4 +1,4 @@
-import { InMemoryPlateauRepository } from "@/core/repositories/in-memory/in-memory-plateau-repository";
+import { PlateauRepository } from "@/core/repositories/plateau-repository";
 
 interface CreatePlateauRequest {
   width: number;
@@ -6,7 +6,7 @@ interface CreatePlateauRequest {
 }
 
 class CreatePlateauUseCase {
-  constructor(private plateauRepository: InMemoryPlateauRepository) {}
+  constructor(private plateauRepository: PlateauRepository) {}
 
   async execute({
     width,
@@ -16,8 +16,7 @@ class CreatePlateauUseCase {
     const plateau = await this.plateauRepository.create({ width, height })
 
     if (!plateau) {
-      throw new Error("Something went wrong!");
-      
+      throw new Error("Something went wrong!");      
     }
 
     return plateau

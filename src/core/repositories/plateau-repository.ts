@@ -3,6 +3,7 @@ import { CreatePlateauDTO } from "../../modules/plateau/dtos/plateau/create-plat
 
 interface PlateauRepository {
   create(data: CreatePlateauDTO): Promise<PlateauEntity>
+  find(id: string): Promise<PlateauEntity | undefined | null>
 }
 
 export { PlateauRepository };
