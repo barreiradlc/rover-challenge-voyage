@@ -8,6 +8,7 @@ Para configurar o projeto precisa-se ter instalados:
 - npm ( ou outro gerenciador de pacotes de sua escolha )
 - Docker
 - git
+- [prisma cli](https://www.prisma.io/docs/orm/reference/prisma-cli-reference)
 
 ### Após fazer o clone do projeto com:
 
