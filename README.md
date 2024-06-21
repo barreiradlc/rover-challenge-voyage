@@ -35,3 +35,8 @@ docker start voyager_rover_db
 
 - [ ] As entidades serão escritas em inglês para evitar problemas relacionados com pluralizações e fidelidade com seus fins dada a ausência de acentos e outras pontuações.
 
+
+
+## TODO (caso haja tempo)
+
+- [ ] Melhorar a tipagem dos erros

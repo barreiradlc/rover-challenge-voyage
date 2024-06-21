@@ -14,9 +14,38 @@ datasource db {
 }
 
 model Plateau {
-  id      String @id @default(uuid())
+  id      String    @id @default(uuid())
+
   width   Int
   height  Int
 
   @@map("plateaus")
+}
+
+enum CardinalPoint {
+  N
+  E
+  S
+  W
+}
+
+model Position {
+  id    String    @id @default(uuid())
+
+  xAxis Int
+  yAxis Int
+  cardinalPosition CardinalPoint
+
+  roversLanding Rover[] @relation("initialPosition")
+  roversFinalDestination Rover[] @relation("finalPosition")
+}
+
+model Rover {
+  id       String  @id @default(uuid())
+
+  initialPosition   Position @relation("initialPosition", fields: [initialPositionId], references: [id])
+  initialPositionId String
+  
+  finalPosition   Position @relation("finalPosition", fields: [finalPositionId], references: [id])
+  finalPositionId String
 }
