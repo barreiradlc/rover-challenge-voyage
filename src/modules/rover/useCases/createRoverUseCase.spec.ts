@@ -1,7 +1,6 @@
 import { InMemoryPlateauRepository } from '@/core/repositories/in-memory/in-memory-plateau-repository'
 import { InMemoryRoverRepository } from '@/core/repositories/in-memory/in-memory-rover-repository'
 import { CreatePlateauDTO } from '@/modules/plateau/dtos/plateau/create-plateau-dto'
-import { beforeEach, describe, expect, it } from 'vitest'
 import { CardinalPoint } from '../entities/rover'
 import { CreateRoverUseCase, CreateRoverUseCaseInterface } from './createRoverUseCase'
 
