@@ -38,6 +38,16 @@ docker start voyager_rover_db
   cp .env.sample .env
 ```
 
+### Configurando DB
+
+```sh
+  # configurar prisma no ambiente local
+  npx prisma generate
+  
+  # migrar banco de dados
+  npx prisma migrate dev
+```
+
 ### Inicialzando a aplicação
 
 ```sh
