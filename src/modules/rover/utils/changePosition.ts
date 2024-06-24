@@ -20,7 +20,6 @@ enum CommandControl {
 }
 
 function handleSpinLeft(cardinalPosition: CardinalPoint): CardinalPoint {
-  // console.log("MOVE LEFT")
   /* 
         N > W
         W > S
@@ -40,7 +39,6 @@ function handleSpinLeft(cardinalPosition: CardinalPoint): CardinalPoint {
 }
 
 function handleSpinRight(cardinalPosition: CardinalPoint): CardinalPoint {
-  // console.log("MOVE RIGHT")
   /* 
         N > E
         E > S
@@ -60,7 +58,6 @@ function handleSpinRight(cardinalPosition: CardinalPoint): CardinalPoint {
 }
 
 function handleMoveForward(cardinalPosition: CardinalPoint, rover: Position): Partial<Position> {
-  // console.log("MOVE FORWARD")
   /**
    *  xAxis     == x
    *  yAxis    == y
@@ -104,7 +101,7 @@ function handleChangePosition(command: CommandControl, rover: Position) {
 
       break;
     default:
-      console.log("You should'd be here, please review the code", command);
+      console.error("You should'd be here, please review the code", command);
 
       break;
   }
@@ -144,7 +141,6 @@ function handleGenerateRandomLandingPosition(): Position {
 // //   cardinalPosition: CardinalPoint.E,
 // // };
 
-// // console.log(rover, 'LAND');
 
 // command.split('').forEach((position: any) => {
 //   const key: keyof typeof CommandControl = position;
@@ -153,7 +149,6 @@ function handleGenerateRandomLandingPosition(): Position {
 //   handleChangePosition(inputPosition);
 // });
 
-// console.log(rover, 'FINAL');
 
 
 interface RoverPosition {

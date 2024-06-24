@@ -6,8 +6,6 @@ class FindPlateauUseCase {
   async execute(id: string) {  
     const plateau = await this.plateauRepository.find(id)
 
-    console.log(plateau)
-
     if (!plateau) {
       throw new Error("Coundn't find the plateau, verify the id!");      
     }
