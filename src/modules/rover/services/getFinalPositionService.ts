@@ -1,8 +1,8 @@
 import { Position } from "@prisma/client";
-import { handleMoveRover } from "../utils/changePosition";
+import { CommandControl } from "../entities/rover";
+import { handleChangePosition } from "../utils/changePosition";
 
-// TODO, horrible name (find a better one ASAP)
-interface ContextRoverDTO {
+interface GetFinalPositionServiceDTO {
   landing: Position
   instruction: string
 }
@@ -11,12 +11,21 @@ class GetFinalPositionService {
   async execute({   
     instruction,
     landing
-  }: ContextRoverDTO) {
+  }: GetFinalPositionServiceDTO) {
+    let finalPosition: Position = landing
 
-    const finalPosition = handleMoveRover({ landing, instruction })
+    const command = instruction.split('') as CommandControl[]
+
+    command.forEach((position: CommandControl) => {
+      const key: keyof typeof CommandControl = position;
+      const inputPosition = CommandControl[key];
+
+      finalPosition = handleChangePosition(inputPosition, finalPosition);
+    });
 
     return finalPosition
   }
 }
 
-export { ContextRoverDTO, GetFinalPositionService };
+export { GetFinalPositionService, GetFinalPositionServiceDTO };
+

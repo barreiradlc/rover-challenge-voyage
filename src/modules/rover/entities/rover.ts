@@ -6,8 +6,13 @@ interface Position {
   cardinalPosition: CardinalPoint
 }
 
+export enum CommandControl {
+  L = 'L',
+  R = 'R',
+  M = 'M',
+}
+
 interface RoverEntity {
-  // TODO, input the correct typing
   id: string;  
   plateauId: string
   initialPosition: Position,

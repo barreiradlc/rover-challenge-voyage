@@ -1,11 +1,5 @@
 import { CardinalPoint, Position } from "@prisma/client";
-import { ContextRoverDTO } from "../services/getFinalPositionService";
-
-enum CommandControl {
-  L = 'L',
-  R = 'R',
-  M = 'M',
-}
+import { CommandControl } from "../entities/rover";
 
 /* 
   * N > W
@@ -95,20 +89,4 @@ function handleChangePosition(command: CommandControl, rover: Position) {
   return rover
 }
 
-function handleMoveRover({ landing, instruction }: ContextRoverDTO) {
-  let destination: Position = landing
-
-  const command = instruction.split('') as CommandControl[]
-
-  command.forEach((position: CommandControl) => {
-    const key: keyof typeof CommandControl = position;
-    const inputPosition = CommandControl[key];
-
-    destination = handleChangePosition(inputPosition, destination);
-  });
-
-
-  return destination
-}
-
-export { handleMoveRover };
+export { handleChangePosition };
