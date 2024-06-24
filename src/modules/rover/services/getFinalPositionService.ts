@@ -1,13 +1,9 @@
-import { CardinalPoint } from "../entities/rover";
+import { Position } from "@prisma/client";
 import { handleMoveRover } from "../utils/changePosition";
 
 // TODO, horrible name (find a better one ASAP)
 interface ContextRoverDTO {
-  landing: {
-    xAxis: number;
-    yAxis: number;
-    cardinalPosition: CardinalPoint 
-  }
+  landing: Position
   instruction: string
 }
 

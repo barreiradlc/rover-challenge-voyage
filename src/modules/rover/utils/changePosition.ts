@@ -1,17 +1,5 @@
+import { CardinalPoint, Position } from "@prisma/client";
 import { ContextRoverDTO } from "../services/getFinalPositionService";
-
-enum CardinalPoint {
-  N = 'N',
-  E = 'E',
-  S = 'S',
-  W = 'W',
-}
-
-interface Position {
-  xAxis: number;
-  yAxis: number;
-  cardinalPosition: CardinalPoint;
-}
 
 enum CommandControl {
   L = 'L',
@@ -19,13 +7,13 @@ enum CommandControl {
   M = 'M',
 }
 
+/* 
+  * N > W
+  * W > S
+  * S > E
+  * E > N
+*/
 function handleSpinLeft(cardinalPosition: CardinalPoint): CardinalPoint {
-  /* 
-        N > W
-        W > S
-        S > E
-        E > N
-    */
   switch (cardinalPosition) {
     case CardinalPoint.N:
       return CardinalPoint.W;
@@ -38,13 +26,13 @@ function handleSpinLeft(cardinalPosition: CardinalPoint): CardinalPoint {
   }
 }
 
+/* 
+  * N > E
+  * E > S
+  * S > W
+  * W > N
+*/
 function handleSpinRight(cardinalPosition: CardinalPoint): CardinalPoint {
-  /* 
-        N > E
-        E > S
-        S > W
-        W > N
-    */
   switch (cardinalPosition) {
     case CardinalPoint.N:
       return CardinalPoint.E;
@@ -57,18 +45,16 @@ function handleSpinRight(cardinalPosition: CardinalPoint): CardinalPoint {
   }
 }
 
+/*
+ *  xAxis     == x
+ *  yAxis    == y
+ * 
+  * N > y++ 
+  * E > x++
+  * S > y--
+  * W > x--   
+*/
 function handleMoveForward(cardinalPosition: CardinalPoint, rover: Position): Partial<Position> {
-  /**
-   *  xAxis     == x
-   *  yAxis    == y
-   */
-
-  /* 
-        N > y++ 
-        E > x++
-        S > y--
-        W > x--
-    */
   switch (cardinalPosition) {
     case CardinalPoint.N:
       return { yAxis: ++rover.yAxis };
@@ -109,14 +95,8 @@ function handleChangePosition(command: CommandControl, rover: Position) {
   return rover
 }
 
-interface RoverPosition {
-  xAxis: number
-  yAxis: number
-  cardinalPosition: CardinalPoint
-}
-
 function handleMoveRover({ landing, instruction }: ContextRoverDTO) {
-  let destination: RoverPosition = landing
+  let destination: Position = landing
 
   const command = instruction.split('') as CommandControl[]
 
