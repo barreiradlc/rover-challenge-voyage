@@ -1,38 +1,42 @@
 # ROVER TEST
 
+[Also available in Brazilian portuguese](./README-pt-BR.md)
+
 ## Setup
 
-Para configurar o projeto precisa-se ter instalados:
+In order to setup the local env you need to have those installed:
 
 - node
-- npm ( ou outro gerenciador de pacotes de sua escolha )
+- npm ( Or another package manager )
 - Docker
 - git
 - [prisma cli](https://www.prisma.io/docs/orm/reference/prisma-cli-reference)
 
-### Após fazer o clone do projeto com:
+### After clone the repo with:
 
 ```sh
   git clone git@github.com:barreiradlc/rover-challenge-voyage.git
 ```
 
-### Navegue até a pasta a qual ele está execute:
+### Go to the folder of the file and run the pakage manager install:
 
 ```sh
-  npm i # ou "yarn"
+  cd rover-challenge-voyage
+
+  npm i # or simply "yarn"
 ```
 
-### Faça o setup do docker
+### Do the DB setup with Docker:
 
 ```sh
-#  setup inicial
+#  Initial setup
 docker run --name voyager_rover_db -e POSTGRESQL_USERNAME=docker -e POSTGRESQL_PASSWORD=docker -e POSTGRESQL_DATABASE=voyager_rover -p 5432:5432 bitnami/postgresql
 
-# executar em demais outras ocasiões
+# Run in forward ocasions
 docker start voyager_rover_db
 ```
 
-### Copiando variáveis de ambiente
+### Copy env vars
 
 ```sh
   cp .env.sample .env
@@ -41,21 +45,21 @@ docker start voyager_rover_db
 ### Configurando DB
 
 ```sh
-  # configurar prisma no ambiente local
+  # Setup prism in yout local env
   npx prisma generate
   
-  # migrar banco de dados
+  # Migrating database
   npx prisma migrate dev
 ```
 
-### Inicialzando a aplicação
+### Runnig the App
 
 ```sh
   npm run start:dev
 ```
 
-A aplicação estará disponível no endereço http://localhost:3333
-Para interagir com ela é possível utilizar os próprios arquivos de http, por meio da extensão do vscode chamada [Rest client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client) disponíveis em:
+Now the App should be runnig in the Adress: http://localhost:3333
+To interact with it in a simple way you can use the vs code extension [Rest client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client) Setted on those files:
 
 > src/http/controllers/plateu/plateau.http
 
@@ -70,45 +74,44 @@ Para interagir com ela é possível utilizar os próprios arquivos de http, por 
 
 ## Considerações finais
 
-A parte funcional do que foi proposto está finalizado, certos requisitos que não estavam no escopo pedido foram colocados como forma de avaliação própria.
-Queria ter terminado tudo mas para respeitar o prazo irei entregar a primeira versão antes que se extenda mais o prazo.
-Até o dia da avaliação irei incrementar mais com os requisitos que citei, limpando o códico ainda mais, fazendo testes em outros locais da aplicação e se possível criar um frontend para a versão final
+The functional part is delivered in the first version of the App, others that were not included at first were included as a self-evaluation process.
+I wish I could had time to invest in a complete version but to deal with the deadline as intended I prefer to deliver the fist part and do the extra mile after sending a functional version of the project.
+Until the day of the delivery I will add my requirements to the project, clean it even more, do a coverage to the other places of the App and if possible develop a frontend for it. 
 
-## Destrinchando as intruções do projeto
+## Getting the requirements for the project
 
-### FRs (Requisitos funcionais)
+### FRs (Functional requirements)
 
-- [x] Deve ser possível criar uma matriz
+- [x] Should be able to create a plateau
 
-- [x] Deve ser possível encontrar a matiz criada;
+- [x] Should be possibleto find a created plateau;
 
-- [x] Deve ser possível criar Rover;
+- [x] Should be possible to create a Rover;
 
-- [x] Deve mover o Rover;
+- [x] Should be able to move the Rover;
 
-### RNs (Regras de negócio)
+### BRs (Business rules)
 
-- [ ] Um Rover não pode aterrissar aonde outro está ocupando a mesma coordenada
+- [ ] A Rover can't land where another one is placed before
 
-- [ ] Um Rover não pode se mover aonde outro está ocupando a mesma coordenada
+- [ ] A Rover can't move to where another one is occupiyng the same position
 
-- [ ] Um Rover não pode se mover ao alcançar os limites da matriz
-
-
-### RNFs (Requisitos não funcionais)
-
-- [x] O projeto será escalado em TDD para evitar refatorações desnecessárias e uso de bibliotecas e estratégias desnecessárias para a finalização do mesmo.
-
-- [x] As entidades serão escritas em inglês para evitar problemas relacionados com pluralizações e fidelidade com seus fins dada a ausência de acentos e outras pontuações.
+- [ ] A Rover can't move to outside the Plateau boundaries
 
 
+### NFRs (Non-functional requirements )
 
-### TODO (caso haja tempo)
+- [x] The project will be scalated in TDD to avoid refactorings and the usage of unnecessary libraries and strategies to reach a final result.
 
-- [ ] Melhorar a tipagem dos erros
+- [x] The entities will be written in english to avoid any language issues 
 
-- [ ] Prevenir que rovers saiam das extremidades da matriz
 
-- [ ] Prevenir que rovers colidam uns com os outros em posições intermediárias
+### TODO (in case of having time to)
 
-- [ ] Prevenir que rovers parem no mesmo destino final
+- [ ] Better the Errors typing
+
+- [ ] Avoid that Roves leave the plateau boundaries
+
+- [ ] Avoid that Rovers colid with each other in intermediate positions
+
+- [ ] Avoid that Rovers stop in the same position as previsous created ones
