@@ -109,48 +109,6 @@ function handleChangePosition(command: CommandControl, rover: Position) {
   return rover
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function handleGenerateRandomLandingPosition(): Position {
-  const enumValues = Object.values(CardinalPoint);
-  const index = Math.floor(Math.random() * enumValues.length);
-  const cardinalPosition = enumValues[index];
-
-  const xAxis = Math.floor(Math.random() * 5);
-  const yAxis = Math.floor(Math.random() * 5);
-
-  return {
-    xAxis,
-    yAxis,
-    cardinalPosition,
-  };
-}
-
-// let rover: Position = handleGenerateRandomLandingPosition()
-
-// const command = "LMLMLMLMM"
-// let rover: Position = {
-//     xAxis: 1,
-//     yAxis: 2,
-//     cardinalPosition: CardinalPoint.N
-// }
-
-// // const command = 'MRRMMRMRRM';
-// // let rover: Position = {
-// //   xAxis: 3,
-// //   yAxis: 3,
-// //   cardinalPosition: CardinalPoint.E,
-// // };
-
-
-// command.split('').forEach((position: any) => {
-//   const key: keyof typeof CommandControl = position;
-//   const inputPosition = CommandControl[key];
-
-//   handleChangePosition(inputPosition);
-// });
-
-
-
 interface RoverPosition {
   xAxis: number
   yAxis: number
