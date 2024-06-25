@@ -1,6 +1,9 @@
 import { PlateauRepository } from "@/core/repositories/plateau-repository";
 import { RoverRepository } from "@/core/repositories/rover-repository";
 import { Position } from "@prisma/client";
+import { OffBoundaryError } from "../error/useCases/offBoundaryError";
+import { PlateauNotFoundError } from "../error/useCases/plateauNotFoundError";
+import { SpotUnavailableError } from "../error/useCases/spotUnavailableError";
 import { GetFinalPositionService } from "../services/getFinalPositionService";
 import { ValidatePlateauBoundariesService } from "../services/validatePlateauBoundaries";
 import { VerifySpotAvalabityService } from "../services/verifySpotAvalabityService";
@@ -24,9 +27,8 @@ class CreateRoverUseCase {
   }: CreateRoverUseCaseInterface) {
     const plateau = await this.plateauRepository.find(plateauId)    
 
-
     if (!plateau) {
-      throw new Error("Plateau not found")
+      throw new PlateauNotFoundError()
     }
 
     const validatePlateauBoundariesService = new ValidatePlateauBoundariesService()
@@ -42,7 +44,7 @@ class CreateRoverUseCase {
     })
 
     if (!isInBoundariesLanding) {
-      throw new Error("The Rover can't land outside the plateau")
+      throw new OffBoundaryError()
     }
 
     const getFinalPositionService = new GetFinalPositionService()
@@ -65,7 +67,7 @@ class CreateRoverUseCase {
 
     if (roversByPlateuId.length!!) {    
       if (isSpotUnavailableToReach) {
-        throw new Error("Will be another rover occupiying the same spot after the commands");      
+        throw new SpotUnavailableError();      
       }
     }
 

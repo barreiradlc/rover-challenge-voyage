@@ -2,6 +2,9 @@ import { InMemoryPlateauRepository } from '@/core/repositories/in-memory/in-memo
 import { InMemoryRoverRepository } from '@/core/repositories/in-memory/in-memory-rover-repository'
 import { CreatePlateauDTO } from '@/modules/plateau/dtos/plateau/create-plateau-dto'
 import { CardinalPoint } from '../entities/rover'
+import { OffBoundaryError } from '../error/useCases/offBoundaryError'
+import { PlateauNotFoundError } from '../error/useCases/plateauNotFoundError'
+import { SpotUnavailableError } from '../error/useCases/spotUnavailableError'
 import { CreateRoverUseCase, CreateRoverUseCaseInterface } from './createRoverUseCase'
 
 let inMemoryRoverRepository: InMemoryRoverRepository
@@ -43,7 +46,7 @@ describe("Create Rover useCase", () => {
   it('Should not be able to create Rover without a plateau', async () => {
     await expect(async() => 
       sut.execute(roverPayload)  
-    ).rejects.toBeInstanceOf(Error)        
+    ).rejects.toBeInstanceOf(PlateauNotFoundError)        
   })
 
   it('Should not be able to create Rover without landing inside the plateau x-Axis', async () => {        
@@ -58,7 +61,7 @@ describe("Create Rover useCase", () => {
           xAxis: 5
         }
       })  
-    ).rejects.toBeInstanceOf(Error)        
+    ).rejects.toBeInstanceOf(OffBoundaryError)        
   })
 
   it('Should not be able to move a Rover to a spot where another one is placed', async () => {        
@@ -82,7 +85,7 @@ describe("Create Rover useCase", () => {
           yAxis: 4
         }
       })  
-    ).rejects.toBeInstanceOf(Error)        
+    ).rejects.toBeInstanceOf(SpotUnavailableError)        
   })
 
   it('Should not be able to create Rover without landing inside the plateau y-Axis', async () => {        
@@ -97,7 +100,7 @@ describe("Create Rover useCase", () => {
           yAxis: 5
         }
       })  
-    ).rejects.toBeInstanceOf(Error)        
+    ).rejects.toBeInstanceOf(SpotUnavailableError)        
   })
 
   suite('Should not be able to move a Rover to outside plateau boundaries', async () => {     
