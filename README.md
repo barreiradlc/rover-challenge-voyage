@@ -92,11 +92,11 @@ Until the day of the delivery I will add my requirements to the project, clean i
 
 ### BRs (Business rules)
 
-- [ ] A Rover can't land where another one is placed before
+- [x] A Rover can't land where another one is placed before
 
 - [ ] A Rover can't move to where another one is occupiyng the same position
 
-- [ ] A Rover can't move to outside the Plateau boundaries
+- [x] A Rover can't move to outside the Plateau boundaries
 
 
 ### NFRs (Non-functional requirements )
@@ -110,7 +110,7 @@ Until the day of the delivery I will add my requirements to the project, clean i
 
 - [ ] Better the Errors typing
 
-- [ ] Avoid that Roves leave the plateau boundaries
+- [x] Avoid that Roves leave the plateau boundaries
 
 - [ ] Avoid that Rovers colid with each other in intermediate positions
 

@@ -90,11 +90,11 @@ Até o dia da avaliação irei incrementar mais com os requisitos que citei, lim
 
 ### RNs (Regras de negócio)
 
-- [ ] Um Rover não pode aterrissar aonde outro está ocupando a mesma coordenada
+- [x] Um Rover não pode aterrissar aonde outro está ocupando a mesma coordenada
 
 - [ ] Um Rover não pode se mover aonde outro está ocupando a mesma coordenada
 
-- [ ] Um Rover não pode se mover ao alcançar os limites da matriz
+- [x] Um Rover não pode se mover ao alcançar os limites da matriz
 
 
 ### RNFs (Requisitos não funcionais)
@@ -109,7 +109,7 @@ Até o dia da avaliação irei incrementar mais com os requisitos que citei, lim
 
 - [ ] Melhorar a tipagem dos erros
 
-- [ ] Prevenir que rovers saiam das extremidades da matriz
+- [x] Prevenir que rovers saiam das extremidades da matriz
 
 - [ ] Prevenir que rovers colidam uns com os outros em posições intermediárias
 
