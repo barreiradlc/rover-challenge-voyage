@@ -1,3 +1,4 @@
+import { PlateauEntity } from "@/modules/plateau/entities/plateau";
 import { CardinalPoint, Position } from "@prisma/client";
 import { CommandControl } from "../entities/rover";
 
@@ -48,36 +49,51 @@ function handleSpinRight(cardinalPosition: CardinalPoint): CardinalPoint {
   * S > y--
   * W > x--   
 */
-function handleMoveForward(cardinalPosition: CardinalPoint, rover: Position): Partial<Position> {
+function handleMoveForward(cardinalPosition: CardinalPoint, rover: Position): Pick<Position, "xAxis" | "yAxis"> {
+  let newPosition = {
+    yAxis: rover.yAxis,
+    xAxis: rover.xAxis,
+  }
+  
   switch (cardinalPosition) {
     case CardinalPoint.N:
-      return { yAxis: ++rover.yAxis };
+      ++newPosition.yAxis    
+      break
     case CardinalPoint.E:
-      return { xAxis: ++rover.xAxis };
-    case CardinalPoint.S:
-      return { yAxis: --rover.yAxis };
+      newPosition.xAxis = rover.xAxis + 1
+      break
+    case CardinalPoint.S:      
+      newPosition.yAxis = newPosition.yAxis - 1
+      break
     case CardinalPoint.W:
-      return { xAxis: --rover.xAxis };
+      newPosition.xAxis = rover.xAxis - 1
+      break
   }
+
+  return newPosition
 }
 
-function handleChangePosition(command: CommandControl, rover: Position) {
+function handleChangePosition(command: CommandControl, rover: Position, plateau: PlateauEntity) {    
   switch (command) {
     case CommandControl.L:
-      rover.cardinalPosition = handleSpinLeft(rover.cardinalPosition);
-
+      rover.cardinalPosition = handleSpinLeft(rover.cardinalPosition)      
+      
       break;
-    case CommandControl.R:
-      rover.cardinalPosition = handleSpinRight(rover.cardinalPosition);
-
+    case CommandControl.R:      
+      rover.cardinalPosition =  handleSpinRight(rover.cardinalPosition)
+      
       break;
-    case CommandControl.M:
-      const newPosition = handleMoveForward(rover.cardinalPosition, rover);
+    case CommandControl.M:      
+      const newPosition: Pick<Position, "xAxis" | "yAxis"> = handleMoveForward(rover.cardinalPosition, rover)      
 
-      rover = {
-        ...rover,
-        ...newPosition,
-      };
+      if (newPosition.xAxis === 0 || newPosition.xAxis > plateau.width) {
+        console.error("Rover can't go outside plateau horizontal boundaries")
+      } else if (newPosition.yAxis === 0 || newPosition.yAxis > plateau.height) {
+        console.error("Rover can't go outside plateau vertical boundaries")
+      } else {
+        rover.xAxis = newPosition.xAxis
+        rover.yAxis = newPosition.yAxis
+      }
 
       break;
     default:

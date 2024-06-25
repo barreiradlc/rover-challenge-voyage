@@ -1,3 +1,4 @@
+import { PlateauEntity } from "@/modules/plateau/entities/plateau";
 import { Position } from "@prisma/client";
 import { CommandControl } from "../entities/rover";
 import { handleChangePosition } from "../utils/changePosition";
@@ -5,12 +6,14 @@ import { handleChangePosition } from "../utils/changePosition";
 interface GetFinalPositionServiceDTO {
   landing: Position
   instruction: string
+  plateau: PlateauEntity
 }
 
 class GetFinalPositionService {  
   async execute({   
     instruction,
-    landing
+    landing,
+    plateau
   }: GetFinalPositionServiceDTO) {
     let finalPosition: Position = landing
 
@@ -20,7 +23,7 @@ class GetFinalPositionService {
       const key: keyof typeof CommandControl = position;
       const inputPosition = CommandControl[key];
 
-      finalPosition = handleChangePosition(inputPosition, finalPosition);
+      finalPosition = handleChangePosition(inputPosition, finalPosition, plateau);
     });
 
     return finalPosition

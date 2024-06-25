@@ -1,16 +1,12 @@
 import { PlateauRepository } from "@/core/repositories/plateau-repository";
 import { RoverRepository } from "@/core/repositories/rover-repository";
-import { CardinalPoint } from "../entities/rover";
+import { Position } from "@prisma/client";
 import { GetFinalPositionService } from "../services/getFinalPositionService";
-import { validateAxisFit } from "../services/validatePlateauBoundaries";
+import { validateAxisFitLanding } from "../services/validatePlateauBoundaries";
 
 interface CreateRoverUseCaseInterface{
   plateauId: string
-  landing: {
-    xAxis: number,
-    yAxis: number,
-    cardinalPosition: CardinalPoint
-  },
+  landing: Position,
   instruction: string
 }
 
@@ -32,7 +28,7 @@ class CreateRoverUseCase {
       throw new Error("Plateau not found")
     }
 
-    const isInBoundaries = validateAxisFit({
+    const isInBoundariesLanding = validateAxisFitLanding({
       plateauAxis: {
         xAxis: plateau?.width,
         yAxis: plateau?.height,
@@ -43,15 +39,31 @@ class CreateRoverUseCase {
       }
     })
 
-    if (!isInBoundaries) {
+    if (!isInBoundariesLanding) {
       throw new Error("The Rover can't land outside the plateau")
     }
 
     const getFinalPositionService = new GetFinalPositionService()
     const destination = await getFinalPositionService.execute({
       landing,
-      instruction
+      instruction,
+      plateau
     })
+
+    // const isInBoundariesDestination = validateAxisFitReachingDestination({
+    //   plateauAxis: {
+    //     xAxis: plateau?.width,
+    //     yAxis: plateau?.height,
+    //   },
+    //   roverAxis: {
+    //     xAxis: landing.xAxis,
+    //     yAxis: landing.yAxis,
+    //   }
+    // })
+
+    // if (!isInBoundariesDestination) {
+    //   throw new Error("The Rover can't reach outside the plateau")
+    // }
 
     const rover = await this.roverRepository.create({ landing, instruction, plateauId, destination })
 
