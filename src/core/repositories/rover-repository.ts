@@ -3,6 +3,7 @@ import { RoverEntity } from "@/modules/rover/entities/rover";
 
 interface RoverRepository {
   create(data: CreateRoverDTO): Promise<RoverEntity>  
+  findByPlateuId(plateauId: string): Promise<RoverEntity[]>  
 }
 
 export { RoverRepository };

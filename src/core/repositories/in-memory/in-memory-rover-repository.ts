@@ -7,6 +7,11 @@ import { RoverRepository } from "../rover-repository";
 class InMemoryRoverRepository implements RoverRepository {
   public rovers: RoverEntity[] = [];
   
+  async findByPlateuId(plateauId: string): Promise<RoverEntity[]> {
+    const roversByPlateuId = this.rovers.filter(( rover ) => rover.plateauId === plateauId)
+
+    return roversByPlateuId
+  }
 
   async create({ landing, instruction, destination, plateauId }: CreateRoverDTO): Promise<RoverEntity> {
     const rover: RoverEntity = {

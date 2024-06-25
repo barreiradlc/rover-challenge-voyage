@@ -94,7 +94,7 @@ Until the day of the delivery I will add my requirements to the project, clean i
 
 - [x] A Rover can't land where another one is placed before
 
-- [ ] A Rover can't move to where another one is occupiyng the same position
+- [x] A Rover can't move to where another one is occupiyng the same position
 
 - [x] A Rover can't move to outside the Plateau boundaries
 
@@ -114,4 +114,4 @@ Until the day of the delivery I will add my requirements to the project, clean i
 
 - [ ] Avoid that Rovers colid with each other in intermediate positions
 
-- [ ] Avoid that Rovers stop in the same position as previsous created ones
+- [x] Avoid that Rovers stop in the same position as previous created ones

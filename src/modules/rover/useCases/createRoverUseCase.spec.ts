@@ -61,6 +61,30 @@ describe("Create Rover useCase", () => {
     ).rejects.toBeInstanceOf(Error)        
   })
 
+  it('Should not be able to move a Rover to a spot where another one is placed', async () => {        
+    const { id: plateauId } = await inMemoryPlateauRepository.create(plateauPayload)    
+
+    await sut.execute({
+      instruction: roverPayload.instruction,
+      plateauId: plateauId,
+      landing: {
+        ...roverPayload.landing,
+        yAxis: 4
+      }
+    })  
+
+    await expect(async() => 
+      sut.execute({
+        instruction: roverPayload.instruction,
+        plateauId: plateauId,
+        landing: {
+          ...roverPayload.landing,
+          yAxis: 4
+        }
+      })  
+    ).rejects.toBeInstanceOf(Error)        
+  })
+
   it('Should not be able to create Rover without landing inside the plateau y-Axis', async () => {        
     const { id: plateauId } = await inMemoryPlateauRepository.create(plateauPayload)    
 
@@ -76,101 +100,139 @@ describe("Create Rover useCase", () => {
     ).rejects.toBeInstanceOf(Error)        
   })
 
-  it('Should not be able to move a Rover to outside plateau boundaries', async () => {        
-    const { id: plateauId } = await inMemoryPlateauRepository.create(plateauPayload)
-     
-    const roverExample1 = await sut.execute({
-      instruction: "M",
-      plateauId: plateauId,
-      landing: {
-        ...roverPayload.landing,
-        id: "position-example1-id",
-        xAxis: 4,
-        yAxis: 4,
-        cardinalPosition: CardinalPoint.N
-      },
-    })
-    
-    const roverExample2 = await sut.execute({
-      instruction: "M",
-      plateauId: plateauId,
-      landing: {
-        ...roverPayload.landing,
-        xAxis: 1,
-        yAxis: 1,
-        cardinalPosition: CardinalPoint.S
-      },
+  suite('Should not be able to move a Rover to outside plateau boundaries', async () => {     
+    it("Top boundary", async () => {
+      const { id: plateauId } = await inMemoryPlateauRepository.create(plateauPayload)
+      const rover = await sut.execute({
+        instruction: "M",
+        plateauId: plateauId,
+        landing: {
+          ...roverPayload.landing,
+          id: "position-top-id",
+          xAxis: 4,
+          yAxis: 4,
+          cardinalPosition: CardinalPoint.N
+        },
+      })
+
+      const { finalPosition } = rover
+
+      expect(finalPosition.xAxis).toEqual(4)
+      expect(finalPosition.yAxis).toEqual(4)
     })
 
-    const roverExample3 = await sut.execute({
-      instruction: "M",
-      plateauId: plateauId,
-      landing: {
-        ...roverPayload.landing,
-        xAxis: 4,
-        yAxis: 4,
-        cardinalPosition: CardinalPoint.E
-      },
-    })
-    
-    const roverExample4 = await sut.execute({
-      instruction: "M",
-      plateauId: plateauId,
-      landing: {
-        ...roverPayload.landing,
-        xAxis: 1,
-        yAxis: 1,
-        cardinalPosition: CardinalPoint.W
-      },
-    })
-     
-    const roverExample1FinalPosition = roverExample1.finalPosition
-    const roverExample2FinalPosition = roverExample2.finalPosition
-    const roverExample3FinalPosition = roverExample3.finalPosition
-    const roverExample4FinalPosition = roverExample4.finalPosition
+    it("Below boundary", async () => {
+      const { id: plateauId } = await inMemoryPlateauRepository.create(plateauPayload)
+      const rover = await sut.execute({
+        instruction: "M",
+        plateauId: plateauId,
+        landing: {
+          ...roverPayload.landing,
+          xAxis: 1,
+          yAxis: 1,
+          cardinalPosition: CardinalPoint.S
+        },
+      })
 
-    expect(roverExample1FinalPosition.xAxis).toEqual(4)
-    expect(roverExample1FinalPosition.yAxis).toEqual(4)
-     
-    expect(roverExample2FinalPosition.xAxis).toEqual(1)
-    expect(roverExample2FinalPosition.yAxis).toEqual(1)             
+      const { finalPosition } = rover
+
+      expect(finalPosition.xAxis).toEqual(1)
+      expect(finalPosition.yAxis).toEqual(1)
+    })
     
-    expect(roverExample3FinalPosition.xAxis).toEqual(4)
-    expect(roverExample3FinalPosition.yAxis).toEqual(4)
-     
-    expect(roverExample4FinalPosition.xAxis).toEqual(1)
-    expect(roverExample4FinalPosition.yAxis).toEqual(1)             
+    it("Right boundary", async () => {
+      const { id: plateauId } = await inMemoryPlateauRepository.create(plateauPayload)
+      const rover = await sut.execute({
+        instruction: "M",
+        plateauId: plateauId,
+        landing: {
+          ...roverPayload.landing,
+          xAxis: 4,
+          yAxis: 4,
+          cardinalPosition: CardinalPoint.E
+        },
+      })
+
+      const { finalPosition } = rover
+
+      expect(finalPosition.xAxis).toEqual(4)
+      expect(finalPosition.yAxis).toEqual(4)
+    })
+    
+    it("Left boundary", async () => {
+      const { id: plateauId } = await inMemoryPlateauRepository.create(plateauPayload)
+      const rover = await sut.execute({
+        instruction: "M",
+        plateauId: plateauId,
+        landing: {
+          ...roverPayload.landing,
+          xAxis: 1,
+          yAxis: 1,
+          cardinalPosition: CardinalPoint.W
+        },
+      })
+
+      const { finalPosition } = rover
+
+      expect(finalPosition.xAxis).toEqual(1)
+      expect(finalPosition.yAxis).toEqual(1)
+    })  
   })
 
-  it('Should be able to match Documentation values', async () => {    
-    /*
-      ### Example 1
+  suite('Should be able to match Documentation values', async () => {    
+    it('Example 1', async () => {    
+      /*
+        ### Example 1
 
-      Landing Position: 1 2 N \
-      Instruction: LMLMLMLMM \
-      Final Position: 1 3 N
+        Landing Position: 1 2 N \
+        Instruction: LMLMLMLMM \
+        Final Position: 1 3 N
+      */
 
+      const { id: plateauId } = await inMemoryPlateauRepository.create(plateauPayload)
+      roverPayload.plateauId = plateauId
+
+      const rover = await sut.execute({
+        ...roverPayload,
+        landing: {
+          id: "position-example1-id",
+          xAxis: 1,
+          yAxis: 2,
+          cardinalPosition: CardinalPoint.N
+        },
+        instruction: "LMLMLMLMM"
+      })
+
+      const { finalPosition } = rover
+
+      /**
+       * Due to the verification to don't 
+       * go outside boundaries the result 
+       * does not match the instructions result
+       * 
+       * 
+       * 
+       */
+      // expect(roverExample1FinalPosition.xAxis).toEqual(1)
+
+      expect(finalPosition.xAxis).toEqual(2)
+      expect(finalPosition.yAxis).toEqual(3)
+      expect(finalPosition.cardinalPosition).toEqual(CardinalPoint.N)
+    })
+
+    it('Example 2', async () => {    
+    /*     
       ### Example 2
       Landing Position: 3 3 E \
       Instruction: MRRMMRMRRM \
       Final Position: 2 3 S
+
     */
 
     const { id: plateauId } = await inMemoryPlateauRepository.create(plateauPayload)
     roverPayload.plateauId = plateauId
 
-    const roverExample1 = await sut.execute({
-      ...roverPayload,
-      landing: {
-        id: "position-example1-id",
-        xAxis: 1,
-        yAxis: 2,
-        cardinalPosition: CardinalPoint.N
-      },
-      instruction: "LMLMLMLMM"
-    })
-
-    const roverExample2 = await sut.execute({
+    const rover = await sut.execute({
       ...roverPayload,
       landing: {
         id: "position-example2-id",
@@ -181,24 +243,11 @@ describe("Create Rover useCase", () => {
       instruction: "MRRMMRMRRM"
     })
     
-    const roverExample1FinalPosition = roverExample1.finalPosition
+    const { finalPosition } = rover
 
-    /**
-     * Due to the verification to don't 
-     * go outside boundaries the result 
-     * does not match the instructions result
-     * 
-     * 
-     * 
-     */
-    // expect(roverExample1FinalPosition.xAxis).toEqual(1)
-
-    expect(roverExample1FinalPosition.xAxis).toEqual(2)
-    expect(roverExample1FinalPosition.yAxis).toEqual(3)
-    expect(roverExample1FinalPosition.cardinalPosition).toEqual(CardinalPoint.N)
-
-    expect(roverExample2.finalPosition.xAxis).toEqual(2)
-    expect(roverExample2.finalPosition.yAxis).toEqual(3)
-    expect(roverExample2.finalPosition.cardinalPosition).toEqual(CardinalPoint.S)
+    expect(finalPosition.xAxis).toEqual(2)
+    expect(finalPosition.yAxis).toEqual(3)
+    expect(finalPosition.cardinalPosition).toEqual(CardinalPoint.S)
+  })
   })
 })

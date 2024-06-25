@@ -92,7 +92,7 @@ Até o dia da avaliação irei incrementar mais com os requisitos que citei, lim
 
 - [x] Um Rover não pode aterrissar aonde outro está ocupando a mesma coordenada
 
-- [ ] Um Rover não pode se mover aonde outro está ocupando a mesma coordenada
+- [x] Um Rover não pode se mover aonde outro está ocupando a mesma coordenada
 
 - [x] Um Rover não pode se mover ao alcançar os limites da matriz
 
@@ -113,4 +113,4 @@ Até o dia da avaliação irei incrementar mais com os requisitos que citei, lim
 
 - [ ] Prevenir que rovers colidam uns com os outros em posições intermediárias
 
-- [ ] Prevenir que rovers parem no mesmo destino final
+- [x] Prevenir que rovers parem no mesmo destino final

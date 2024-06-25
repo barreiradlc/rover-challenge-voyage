@@ -2,7 +2,8 @@ import { PlateauRepository } from "@/core/repositories/plateau-repository";
 import { RoverRepository } from "@/core/repositories/rover-repository";
 import { Position } from "@prisma/client";
 import { GetFinalPositionService } from "../services/getFinalPositionService";
-import { validateAxisFitLanding } from "../services/validatePlateauBoundaries";
+import { ValidatePlateauBoundariesService } from "../services/validatePlateauBoundaries";
+import { VerifySpotAvalabityService } from "../services/verifySpotAvalabityService";
 
 interface CreateRoverUseCaseInterface{
   plateauId: string
@@ -28,7 +29,8 @@ class CreateRoverUseCase {
       throw new Error("Plateau not found")
     }
 
-    const isInBoundariesLanding = validateAxisFitLanding({
+    const validatePlateauBoundariesService = new ValidatePlateauBoundariesService()
+    const isInBoundariesLanding = await validatePlateauBoundariesService.execute({
       plateauAxis: {
         xAxis: plateau?.width,
         yAxis: plateau?.height,
@@ -50,20 +52,22 @@ class CreateRoverUseCase {
       plateau
     })
 
-    // const isInBoundariesDestination = validateAxisFitReachingDestination({
-    //   plateauAxis: {
-    //     xAxis: plateau?.width,
-    //     yAxis: plateau?.height,
-    //   },
-    //   roverAxis: {
-    //     xAxis: landing.xAxis,
-    //     yAxis: landing.yAxis,
-    //   }
-    // })
+    const roversByPlateuId = await this.roverRepository.findByPlateuId(plateauId)
 
-    // if (!isInBoundariesDestination) {
-    //   throw new Error("The Rover can't reach outside the plateau")
-    // }
+    const verifySpotAvalabityService = new VerifySpotAvalabityService()
+    const isSpotUnavailableToReach = await verifySpotAvalabityService.execute({
+      destinationAxis: {
+        xAxis: destination.xAxis,
+        yAxis: destination.yAxis
+      },
+      rovers: roversByPlateuId
+    })
+
+    if (roversByPlateuId.length!!) {    
+      if (isSpotUnavailableToReach) {
+        throw new Error("Will be another rover occupiying the same spot after the commands");      
+      }
+    }
 
     const rover = await this.roverRepository.create({ landing, instruction, plateauId, destination })
 

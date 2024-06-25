@@ -60,13 +60,13 @@ function handleMoveForward(cardinalPosition: CardinalPoint, rover: Position): Pi
       ++newPosition.yAxis    
       break
     case CardinalPoint.E:
-      newPosition.xAxis = rover.xAxis + 1
+      ++newPosition.xAxis
       break
     case CardinalPoint.S:      
-      newPosition.yAxis = newPosition.yAxis - 1
+      --newPosition.yAxis
       break
     case CardinalPoint.W:
-      newPosition.xAxis = rover.xAxis - 1
+      --newPosition.xAxis
       break
   }
 
