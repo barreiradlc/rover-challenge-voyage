@@ -1,6 +1,6 @@
 import { PlateauEntity } from "@/modules/plateau/entities/plateau";
 import { CardinalPoint, Position } from "@prisma/client";
-import { CommandControl } from "../entities/rover";
+import { CommandControl, RoverEntity } from "../entities/rover";
 
 /* 
   * N > W
@@ -73,7 +73,20 @@ function handleMoveForward(cardinalPosition: CardinalPoint, rover: Position): Pi
   return newPosition
 }
 
-function handleChangePosition(command: CommandControl, rover: Position, plateau: PlateauEntity) {    
+function handleVerifyPositionOccupied(nextPosition: Pick<Position, "xAxis" | "yAxis">, rovers: RoverEntity[]) {
+  const isPositionOccupied = rovers.some((rover) => {
+    const { finalPosition } = rover
+
+    const isXAxisOccupied = finalPosition.xAxis === nextPosition.xAxis
+    const isYAxisOccupied = finalPosition.yAxis === nextPosition.yAxis
+
+    return isXAxisOccupied && isYAxisOccupied
+  })
+
+  return isPositionOccupied
+}
+
+function handleChangePosition(command: CommandControl, rover: Position, plateau: PlateauEntity, rovers: RoverEntity[]) {    
   switch (command) {
     case CommandControl.L:
       rover.cardinalPosition = handleSpinLeft(rover.cardinalPosition)      
@@ -86,7 +99,11 @@ function handleChangePosition(command: CommandControl, rover: Position, plateau:
     case CommandControl.M:      
       const newPosition: Pick<Position, "xAxis" | "yAxis"> = handleMoveForward(rover.cardinalPosition, rover)      
 
-      if (newPosition.xAxis === 0 || newPosition.xAxis > plateau.width) {
+      const isPositionOccupied = handleVerifyPositionOccupied(newPosition, rovers)
+
+      if (isPositionOccupied && rovers.length !== 0) {
+        console.error("Rover can't go where another one is placed")
+      } else if (newPosition.xAxis === 0 || newPosition.xAxis > plateau.width) {
         console.error("Rover can't go outside plateau horizontal boundaries")
       } else if (newPosition.yAxis === 0 || newPosition.yAxis > plateau.height) {
         console.error("Rover can't go outside plateau vertical boundaries")

@@ -108,10 +108,10 @@ Until the day of the delivery I will add my requirements to the project, clean i
 
 ### TODO (in case of having time to)
 
-- [ ] Better the Errors typing
+- [x] Better the Errors typing
 
 - [x] Avoid that Roves leave the plateau boundaries
 
-- [ ] Avoid that Rovers colid with each other in intermediate positions
+- [x] Avoid that Rovers colid with each other in intermediate positions
 
 - [x] Avoid that Rovers stop in the same position as previous created ones

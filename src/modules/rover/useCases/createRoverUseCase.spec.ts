@@ -4,7 +4,6 @@ import { CreatePlateauDTO } from '@/modules/plateau/dtos/plateau/create-plateau-
 import { CardinalPoint } from '../entities/rover'
 import { OffBoundaryError } from '../error/useCases/offBoundaryError'
 import { PlateauNotFoundError } from '../error/useCases/plateauNotFoundError'
-import { SpotUnavailableError } from '../error/useCases/spotUnavailableError'
 import { CreateRoverUseCase, CreateRoverUseCaseInterface } from './createRoverUseCase'
 
 let inMemoryRoverRepository: InMemoryRoverRepository
@@ -49,59 +48,68 @@ describe("Create Rover useCase", () => {
     ).rejects.toBeInstanceOf(PlateauNotFoundError)        
   })
 
-  it('Should not be able to create Rover without landing inside the plateau x-Axis', async () => {        
-    const { id: plateauId } = await inMemoryPlateauRepository.create(plateauPayload)
+  
+
+   suite('Should not be able to create Rover without landing inside the plateau boudaries', async () => {        
+    it('y-Axis', async () => {        
+      const { id: plateauId } = await inMemoryPlateauRepository.create(plateauPayload)    
+
+      await expect(async() => 
+        sut.execute({
+          instruction: roverPayload.instruction, 
+          plateauId: plateauId,
+          landing: {
+            ...roverPayload.landing,
+            yAxis: 5
+          }
+        })  
+      ).rejects.toBeInstanceOf(OffBoundaryError)        
+    })
     
-    await expect(async() => 
-      sut.execute({
-        instruction: roverPayload.instruction,
-        plateauId: plateauId,
-        landing: {
-          ...roverPayload.landing,
-          xAxis: 5
-        }
-      })  
-    ).rejects.toBeInstanceOf(OffBoundaryError)        
+    it('x-Axis', async () => {        
+      const { id: plateauId } = await inMemoryPlateauRepository.create(plateauPayload)
+      
+      await expect(async() => 
+        sut.execute({
+          instruction: roverPayload.instruction,
+          plateauId: plateauId,
+          landing: {
+            ...roverPayload.landing,
+            xAxis: 5
+          }
+        })  
+      ).rejects.toBeInstanceOf(OffBoundaryError)        
+    })
   })
 
   it('Should not be able to move a Rover to a spot where another one is placed', async () => {        
     const { id: plateauId } = await inMemoryPlateauRepository.create(plateauPayload)    
 
-    await sut.execute({
+    const { finalPosition: rover1FinalPostion } = await sut.execute({
       instruction: roverPayload.instruction,
       plateauId: plateauId,
       landing: {
         ...roverPayload.landing,
         yAxis: 4
       }
-    })  
+    })
+    const { finalPosition: rover2FinalPostion } = await sut.execute({
+      instruction: roverPayload.instruction,
+      plateauId: plateauId,
+      landing: {
+        ...roverPayload.landing,
+        yAxis: 4
+      }
+    })
 
-    await expect(async() => 
-      sut.execute({
-        instruction: roverPayload.instruction,
-        plateauId: plateauId,
-        landing: {
-          ...roverPayload.landing,
-          yAxis: 4
-        }
-      })  
-    ).rejects.toBeInstanceOf(SpotUnavailableError)        
-  })
-
-  it('Should not be able to create Rover without landing inside the plateau y-Axis', async () => {        
-    const { id: plateauId } = await inMemoryPlateauRepository.create(plateauPayload)    
-
-    await expect(async() => 
-      sut.execute({
-        instruction: roverPayload.instruction,
-        plateauId: plateauId,
-        landing: {
-          ...roverPayload.landing,
-          yAxis: 5
-        }
-      })  
-    ).rejects.toBeInstanceOf(SpotUnavailableError)        
-  })
+    expect({
+      xAxis: rover1FinalPostion.xAxis,
+      yAxis: rover1FinalPostion.yAxis,
+    }).not.toStrictEqual({
+      xAxis: rover2FinalPostion.xAxis,
+      yAxis: rover2FinalPostion.yAxis,
+    })
+  }) 
 
   suite('Should not be able to move a Rover to outside plateau boundaries', async () => {     
     it("Top boundary", async () => {
@@ -180,6 +188,151 @@ describe("Create Rover useCase", () => {
       expect(finalPosition.xAxis).toEqual(1)
       expect(finalPosition.yAxis).toEqual(1)
     })  
+  })
+  
+  suite('Should not be able to move a Rover to where another one is placed', async () => {     
+    it("Top boundary", async () => {
+      const { id: plateauId } = await inMemoryPlateauRepository.create(plateauPayload)
+
+      const { finalPosition: rover1FinalPostion } = await sut.execute({
+        instruction: "M",
+        plateauId: plateauId,
+        landing: {
+          ...roverPayload.landing,
+          id: "position-top-id",
+          xAxis: 4,
+          yAxis: 1,
+          cardinalPosition: CardinalPoint.N
+        },
+      })
+      
+      const { finalPosition: rover2FinalPostion } = await sut.execute({
+        instruction: "M",
+        plateauId: plateauId,
+        landing: {
+          ...roverPayload.landing,
+          id: "position-top-id",
+          xAxis: 4,
+          yAxis: 1,
+          cardinalPosition: CardinalPoint.N
+        },
+      })
+      
+      expect({
+        xAxis: rover1FinalPostion.xAxis,
+        yAxis: rover1FinalPostion.yAxis,
+      }).not.toStrictEqual({
+        xAxis: rover2FinalPostion.xAxis,
+        yAxis: rover2FinalPostion.yAxis,
+      })
+
+    })
+
+    it("Bottom boundary", async () => {
+      const { id: plateauId } = await inMemoryPlateauRepository.create(plateauPayload)
+
+      const { finalPosition: rover1FinalPostion } = await sut.execute({
+        instruction: "M",
+        plateauId: plateauId,
+        landing: {
+          ...roverPayload.landing,
+          id: "position-bottom-id",
+          xAxis: 4,
+          yAxis: 4,
+          cardinalPosition: CardinalPoint.S
+        },
+      })
+      
+      const { finalPosition: rover2FinalPostion } = await sut.execute({
+        instruction: "M",
+        plateauId: plateauId,
+        landing: {
+          ...roverPayload.landing,
+          id: "position-bottom-id",
+          xAxis: 4,
+          yAxis: 4,
+          cardinalPosition: CardinalPoint.S
+        },
+      })
+
+      expect({
+        xAxis: rover1FinalPostion.xAxis,
+        yAxis: rover1FinalPostion.yAxis,
+      }).not.toStrictEqual({
+        xAxis: rover2FinalPostion.xAxis,
+        yAxis: rover2FinalPostion.yAxis,
+      })
+    })
+    
+    it("Right boundary", async () => {
+      const { id: plateauId } = await inMemoryPlateauRepository.create(plateauPayload)
+
+      const { finalPosition: rover1FinalPostion } = await sut.execute({
+        instruction: "M",
+        plateauId: plateauId,
+        landing: {
+          ...roverPayload.landing,
+          id: "position-right-id",
+          xAxis: 1,
+          yAxis: 1,
+          cardinalPosition: CardinalPoint.E
+        },
+      })
+      const { finalPosition: rover2FinalPostion } = await sut.execute({
+        instruction: "M",
+        plateauId: plateauId,
+        landing: {
+          ...roverPayload.landing,
+          id: "position-right-id",
+          xAxis: 1,
+          yAxis: 1,
+          cardinalPosition: CardinalPoint.E
+        },
+      })
+
+      expect({
+        xAxis: rover1FinalPostion.xAxis,
+        yAxis: rover1FinalPostion.yAxis,
+      }).not.toStrictEqual({
+        xAxis: rover2FinalPostion.xAxis,
+        yAxis: rover2FinalPostion.yAxis,
+      })
+    })
+    
+    it("Left boundary", async () => {
+      const { id: plateauId } = await inMemoryPlateauRepository.create(plateauPayload)
+
+      const { finalPosition: rover1FinalPostion } = await sut.execute({
+        instruction: "M",
+        plateauId: plateauId,
+        landing: {
+          ...roverPayload.landing,
+          id: "position-left-id",
+          xAxis: 4,
+          yAxis: 4,
+          cardinalPosition: CardinalPoint.W
+        },
+      })
+      const { finalPosition: rover2FinalPostion } = await sut.execute({
+        instruction: "M",
+        plateauId: plateauId,
+        landing: {
+          ...roverPayload.landing,
+          id: "position-left-id",
+          xAxis: 4,
+          yAxis: 4,
+          cardinalPosition: CardinalPoint.W
+        },
+      })
+      
+      expect({
+        xAxis: rover1FinalPostion.xAxis,
+        yAxis: rover1FinalPostion.yAxis,
+      }).not.toStrictEqual({
+        xAxis: rover2FinalPostion.xAxis,
+        yAxis: rover2FinalPostion.yAxis,
+      })      
+    })
   })
 
   suite('Should be able to match Documentation values', async () => {    

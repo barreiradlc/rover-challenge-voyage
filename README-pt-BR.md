@@ -107,10 +107,10 @@ Até o dia da avaliação irei incrementar mais com os requisitos que citei, lim
 
 ### TODO (caso haja tempo)
 
-- [ ] Melhorar a tipagem dos erros
+- [x] Melhorar a tipagem dos erros
 
 - [x] Prevenir que rovers saiam das extremidades da matriz
 
-- [ ] Prevenir que rovers colidam uns com os outros em posições intermediárias
+- [x] Prevenir que rovers colidam uns com os outros em posições intermediárias
 
 - [x] Prevenir que rovers parem no mesmo destino final

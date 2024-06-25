@@ -47,14 +47,15 @@ class CreateRoverUseCase {
       throw new OffBoundaryError()
     }
 
+    const roversByPlateuId = await this.roverRepository.findByPlateuId(plateauId)
+    
     const getFinalPositionService = new GetFinalPositionService()
     const destination = await getFinalPositionService.execute({
       landing,
       instruction,
-      plateau
+      plateau,
+      rovers: roversByPlateuId
     })
-
-    const roversByPlateuId = await this.roverRepository.findByPlateuId(plateauId)
 
     const verifySpotAvalabityService = new VerifySpotAvalabityService()
     const isSpotUnavailableToReach = await verifySpotAvalabityService.execute({

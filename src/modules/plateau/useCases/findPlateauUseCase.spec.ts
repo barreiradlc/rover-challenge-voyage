@@ -1,7 +1,7 @@
 import { InMemoryPlateauRepository } from '@/core/repositories/in-memory/in-memory-plateau-repository'
+import { FindPlateauUseCase } from '@/modules/plateau/useCases/findPlateauUseCase'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { CreatePlateauDTO } from '../dtos/plateau/create-plateau-dto'
-import { FindPlateauUseCase } from './findPlateauUseCase'
 
 let inMemoRyPlateauRepository: InMemoryPlateauRepository
 let sut: FindPlateauUseCase
